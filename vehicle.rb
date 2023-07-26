@@ -45,8 +45,8 @@ class Vehicle
 end
 
 #Testing consideration for entire app - testing comes from unit tests and create api for functional testing
-#Improvement - get headers in csv output files to work
-#Improvement- use db for data as it will prevent potential duplication (primary key)
+#Improvement - get headers in csv output files to be present
+#Improvement- use db for data as it will prevent potential duplication (primary keys VRN?)
 #Improvement - check for duplication of data
 #Questions for BA - can they have multiple colours, are all fields mandatory, different formats of vrn etc.
 #Unit test individual functions

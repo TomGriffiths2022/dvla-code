@@ -48,27 +48,29 @@ def write_to_file(valid_vehicle:)
     row["colour"] = valid_vehicle["colour"]
     row["dateOfManufacture"] = valid_vehicle["date_of_manufacture"]
     csv << row
-    end
   end
-
+end
 
 def write_invalid_vehicles_to_file(invalid_vehicle:)
-  # Create the headers for the data, including errors
+  # Create the headers for the data and include errors as a new column
   headers = ["vrn", "make", "colour", "dateOfManufacture", "errors"]
-  CSV.open('invalid_vehicles.csv', 'a+') do |csv|
+  CSV.open('invalid_vehicles.csv', 'a') do |csv|
     row = CSV::Row.new(headers, [])
     row["vrn"] = invalid_vehicle["vrn"]
     row["make"] = invalid_vehicle["make"]
     row["colour"] = invalid_vehicle["colour"]
     row["dateOfManufacture"] = invalid_vehicle["date_of_manufacture"]
-    row["errors"] = invalid_vehicle["errors"].join(',')
+    row["errors"] = invalid_vehicle["errors"].join(', ') # pulls the errors from the array
     csv << row
-    end
+  end
 end
 
 input_from_file
 Vehicle.calculate_valid_vehicles
 Vehicle.calculate_invalid_vehicles
+
+# Consideration - refactor the writing to file to be more efficient?
+# Consideration - use the console interactively if needed more functionality
 
 
 
