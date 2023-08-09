@@ -1,5 +1,4 @@
 require_relative 'vrn_validator'
-require 'byebug'
 require 'rspec/expectations'
 include RSpec::Matchers
 

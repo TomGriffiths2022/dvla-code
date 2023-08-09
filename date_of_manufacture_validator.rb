@@ -1,4 +1,3 @@
-require 'pry'
 require 'date'
 module DateOfManufactureValidator
   # Validates the date_of_manufacture is valid and not in the future
@@ -19,7 +18,7 @@ module DateOfManufactureValidator
     incoming_year_of_manufacture = incoming_date_of_manufacture.year #extracting the year
     
     #using Proc to store the block of code in a variable for the case statement
-    within_range = Proc.new{|incoming_year_of_manufacture| (incoming_year_of_manufacture >= lower_limit_year && incoming_year_of_manufacture < current_year)}
+    within_range = Proc.new{|incoming_year_of_manufacture| (incoming_year_of_manufacture >= lower_limit_year && incoming_year_of_manufacture <= current_year)}
    
     case incoming_year_of_manufacture #case statement to determine the year
     when incoming_year_of_manufacture > current_year # and if the calculation gives a year greater than now
@@ -31,3 +30,5 @@ module DateOfManufactureValidator
     end
   end
 end
+
+# Consideration - different formats of date, i.e. MM/DD/YYYY etc.

@@ -4,13 +4,14 @@ require_relative 'date_of_manufacture_validator'
 require_relative 'make_validator'
 require_relative 'vehicle'
 
-require 'pry'
 require 'csv'
 
 def input_from_file
 # Receive a file of vehicle data which are to be validated, and if valid write to valid_vehicles.csv file
 # If not valid then write to invalid_vehicles.csv file with original data and errors
 puts "Analysing vehicles.csv file"
+valid_vehicles = []
+invalid_vehicles = []
   table = CSV.foreach('vehicles.csv', headers: true, header_converters: :symbol) do |row|
     vrn = row[:vrn]
     make = row[:make]
@@ -28,40 +29,47 @@ puts "Analysing vehicles.csv file"
     if errors.empty?
       # If there are no errors, produce a valid vehicle
       valid_vehicle = Vehicle.new({vrn: vrn, make: make, colour: colour, date_of_manufacture: date_of_manufacture})
-      write_to_file(valid_vehicle: valid_vehicle.vehicle)
+      # Add the valid vehicle to the valid_vehicles array
+      valid_vehicles << valid_vehicle.vehicle
     else
       # If there are errors, produce an invalid vehicle
       invalid_vehicle = Vehicle.new({vrn: vrn, make: make, colour: colour, date_of_manufacture: date_of_manufacture}, errors: errors)
-      write_invalid_vehicles_to_file(invalid_vehicle: invalid_vehicle.vehicle)
+      # Add the invalid vehicle to the invalid_vehicles array
+      invalid_vehicles << invalid_vehicle.vehicle
     end
   end
-    puts "All vehicles have been validated"
+  write_to_file(valid_vehicles: valid_vehicles)
+  write_invalid_vehicles_to_file(invalid_vehicles: invalid_vehicles)
+  puts "All vehicles have been validated"
 end
 
-def write_to_file(valid_vehicle:)
-  # Create the headers for the data
-  headers = ["vrn", "make", "colour", "dateOfManufacture"]
-  CSV.open('valid_vehicles.csv', 'a') do |csv|
-    row = CSV::Row.new(headers, [])
-    row["vrn"] = valid_vehicle["vrn"]
-    row["make"] = valid_vehicle["make"]
-    row["colour"] = valid_vehicle["colour"]
-    row["dateOfManufacture"] = valid_vehicle["date_of_manufacture"]
-    csv << row
+def write_to_file(valid_vehicles:)
+# Read the valid_vehicles.json file
+  file = File.read('valid_vehicles.json')
+  array = JSON.parse(file)
+  array["valid_vehicles"] = []
+# Add each valid_vehicle to the array
+  valid_vehicles.each do |vehicle|
+    array["valid_vehicles"] << vehicle
+  end
+# Open the valid_vehicles.json file ready for writing
+  File.open("valid_vehicles.json", "w") do |f|
+    f.write(JSON.pretty_generate(array))
   end
 end
 
-def write_invalid_vehicles_to_file(invalid_vehicle:)
-  # Create the headers for the data and include errors as a new column
-  headers = ["vrn", "make", "colour", "dateOfManufacture", "errors"]
-  CSV.open('invalid_vehicles.csv', 'a') do |csv|
-    row = CSV::Row.new(headers, [])
-    row["vrn"] = invalid_vehicle["vrn"]
-    row["make"] = invalid_vehicle["make"]
-    row["colour"] = invalid_vehicle["colour"]
-    row["dateOfManufacture"] = invalid_vehicle["date_of_manufacture"]
-    row["errors"] = invalid_vehicle["errors"].join(', ') # pulls the errors from the array
-    csv << row
+def write_invalid_vehicles_to_file(invalid_vehicles:)
+  # Read the invalid_vehicles.json file
+  file = File.read('invalid_vehicles.json')
+  array = JSON.parse(file)
+  array["invalid_vehicles"] = []
+# Add each invalid_vehicle to the array
+  invalid_vehicles.each do |vehicle|
+    array["invalid_vehicles"] << vehicle
+  end
+  # Open the invalid_vehicles.json file ready for writing
+  File.open("invalid_vehicles.json", "w") do |f|
+    f.write(JSON.pretty_generate(array))
   end
 end
 

@@ -1,4 +1,3 @@
-require 'pry'
 module ColourValidator
   # Validates the colour is one of the acceptable values
   #

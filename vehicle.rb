@@ -1,3 +1,5 @@
+require 'json'
+
 class Vehicle
 
   attr_accessor :vehicle
@@ -33,13 +35,19 @@ class Vehicle
 
   def self.calculate_valid_vehicles
     # Calculates the valid vehicles extracted from the original vehicles.csv
-    number_of_valid_vehicles = CSV.read('valid_vehicles.csv').count
+    valid_vehicles_file = open("valid_vehicles.json")
+    vehicles = valid_vehicles_file.read
+    parsed = JSON.parse(vehicles).to_h
+    number_of_valid_vehicles = parsed["valid_vehicles"].count
     puts "Number of valid vehicles in 'vehicles.csv' file is #{number_of_valid_vehicles}"
   end
   
   def self.calculate_invalid_vehicles
     # Calculates the invalid vehicles extracted from the original vehicles.csv
-    number_of_invalid_vehicles = CSV.read('invalid_vehicles.csv').count
+    invalid_vehicles_file = open("invalid_vehicles.json")
+    vehicles = invalid_vehicles_file.read
+    parsed = JSON.parse(vehicles).to_h
+    number_of_invalid_vehicles = parsed["invalid_vehicles"].count
     puts "Number of invalid vehicles in 'vehicles.csv' file is #{number_of_invalid_vehicles}"
   end
 end

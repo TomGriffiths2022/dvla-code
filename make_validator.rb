@@ -1,4 +1,3 @@
-require 'pry'
 module MakeValidator
   # Validates the make is one of the acceptable values
   #
